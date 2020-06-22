@@ -1,5 +1,6 @@
 package phonebook;
 
+import phonebook.SearchingAlgorithm.JumpSearch;
 import phonebook.SearchingAlgorithm.LinearSearch;
 import phonebook.SortingAlgorithm.BubbleSort;
 
@@ -55,16 +56,34 @@ public class PhoneBook {
     }
 
     public void init() {
-        System.out.println("Start searching...");
+        System.out.println("Start searching (linear search)...");
         long startTime = System.currentTimeMillis();
-        int found = LinearSearch.linearSearch(arrayWithData,arrayWithDataForSearch);
+        int foundLinear = LinearSearch.linearSearch(arrayWithData, arrayWithDataForSearch);
         long estimatedTime = System.currentTimeMillis() - startTime;
+        System.out.println("Found " + foundLinear + " / 500 entries. Time taken: " + printTime(estimatedTime));
+
+        System.out.println("Start searching (bubble sort + jump search)...");
         long startSort = System.currentTimeMillis();
-        BubbleSort.bubbleSort(arrayWithData);
-        //BubbleSort.bubbleSort(arrayWithDataForSearch);
-        long endSort = System.currentTimeMillis() - startSort;
-        System.out.println("Time taken: " + printTime(endSort));
-        System.out.println("Found " + found + " / 500 entries. Time taken: " + printTime(estimatedTime));
+        if (BubbleSort.bubbleSort(arrayWithData, estimatedTime * 10) || BubbleSort.bubbleSort(arrayWithDataForSearch, estimatedTime * 10)) {
+            long endSort = System.currentTimeMillis() - startSort;
+            long startSearch = System.currentTimeMillis();
+            int foundJump = LinearSearch.linearSearch(arrayWithData, arrayWithDataForSearch);
+            long endSearch = System.currentTimeMillis() - startSearch;
+            System.out.println("Found " + foundJump + " / 500 entries. Time taken: " + printTime(endSort + endSearch));
+            System.out.println("Sorting time: " + printTime(endSort) + " - STOPPED, moved to linear search");
+            System.out.println("Searching time: " + printTime(endSearch));
+        } else {
+            long endSort = System.currentTimeMillis() - startSort;
+            int foundJump = 0;
+            long startSearchJump = System.currentTimeMillis();
+            for (RepresentPhoneBook representPhoneBook : arrayWithData) {
+                foundJump += JumpSearch.jumpSearch(representPhoneBook, arrayWithDataForSearch);
+            }
+            long endSearchJump = System.currentTimeMillis() - startSearchJump;
+            System.out.println("Found " + foundJump + " / 500 entries. Time taken: " + printTime(endSearchJump + endSort));
+            System.out.println("Sorting time: " + printTime(endSort));
+            System.out.println("Searching time: " + printTime(endSearchJump));
+        }
     }
 
     private String printTime(long estimatedTime) {

@@ -43,7 +43,6 @@ public class RepresentPhoneBook {
     public String getSecondName() {
         return secondName;
     }
-
     @Override
     public String toString() {
         return "RepresentPhoneBook{" +

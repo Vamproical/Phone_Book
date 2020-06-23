@@ -1,4 +1,5 @@
 package phonebook;
+
 public class RepresentPhoneBook {
     private int phoneNumber;
     private final String firstName;
@@ -10,19 +11,19 @@ public class RepresentPhoneBook {
         this.secondName = secondName;
     }
 
-    public  RepresentPhoneBook(int phoneNumber, String firstName) {
+    public RepresentPhoneBook(int phoneNumber, String firstName) {
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
         this.secondName = "";
     }
 
-    public  RepresentPhoneBook(String firstName, String secondName) {
+    public RepresentPhoneBook(String firstName, String secondName) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.phoneNumber = -1;
     }
 
-    public  RepresentPhoneBook(String firstName) {
+    public RepresentPhoneBook(String firstName) {
         this.firstName = firstName;
         this.secondName = "";
         this.phoneNumber = -1;
@@ -43,6 +44,7 @@ public class RepresentPhoneBook {
     public String getSecondName() {
         return secondName;
     }
+
     @Override
     public String toString() {
         return "RepresentPhoneBook{" +

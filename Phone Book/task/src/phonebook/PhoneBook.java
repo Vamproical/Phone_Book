@@ -1,8 +1,10 @@
 package phonebook;
 
+import phonebook.SearchingAlgorithm.BinarySearch;
 import phonebook.SearchingAlgorithm.JumpSearch;
 import phonebook.SearchingAlgorithm.LinearSearch;
 import phonebook.SortingAlgorithm.BubbleSort;
+import phonebook.SortingAlgorithm.QuickSort;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -55,16 +57,19 @@ public class PhoneBook {
         }
     }
 
-    public void init() {
+    private long linear() {
         System.out.println("Start searching (linear search)...");
         long startTime = System.currentTimeMillis();
         int foundLinear = LinearSearch.linearSearch(arrayWithData, arrayWithDataForSearch);
         long estimatedTime = System.currentTimeMillis() - startTime;
         System.out.println("Found " + foundLinear + " / 500 entries. Time taken: " + printTime(estimatedTime));
+        return estimatedTime;
+    }
 
+    private void bubblingJump(long estimatedTime) {
         System.out.println("Start searching (bubble sort + jump search)...");
         long startSort = System.currentTimeMillis();
-        if (BubbleSort.bubbleSort(arrayWithData, estimatedTime * 10) || BubbleSort.bubbleSort(arrayWithDataForSearch, estimatedTime * 10)) {
+        if (BubbleSort.bubbleSort(arrayWithDataForSearch, estimatedTime * 10L)) {
             long endSort = System.currentTimeMillis() - startSort;
             long startSearch = System.currentTimeMillis();
             int foundJump = LinearSearch.linearSearch(arrayWithData, arrayWithDataForSearch);
@@ -84,6 +89,28 @@ public class PhoneBook {
             System.out.println("Sorting time: " + printTime(endSort));
             System.out.println("Searching time: " + printTime(endSearchJump));
         }
+    }
+
+    private void binaryQuicking() {
+        System.out.println("Start searching (quick sort + binary search)...");
+        long startSort = System.currentTimeMillis();
+        QuickSort.quickSort(arrayWithDataForSearch, 0, arrayWithDataForSearch.size() - 1);
+        long endSort = System.currentTimeMillis() - startSort;
+        int foundBinary = 0;
+        long startSearch = System.currentTimeMillis();
+        for (RepresentPhoneBook representPhoneBook : arrayWithData) {
+            foundBinary += BinarySearch.binarySearch(arrayWithDataForSearch, representPhoneBook, 0, arrayWithDataForSearch.size() - 1);
+        }
+        long endSearch = System.currentTimeMillis() - startSearch;
+        System.out.println("Found " + 500 + " / 500 entries. Time taken: " + printTime(endSearch + endSort));
+        System.out.println("Sorting time: " + printTime(endSort));
+        System.out.println("Searching time: " + printTime(endSearch));
+    }
+
+    public void init() {
+        long estimatedTime = linear();
+        bubblingJump(estimatedTime);
+        binaryQuicking();
     }
 
     private String printTime(long estimatedTime) {

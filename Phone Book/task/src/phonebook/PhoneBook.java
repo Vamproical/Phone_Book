@@ -8,15 +8,15 @@ import phonebook.SortingAlgorithm.QuickSort;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class PhoneBook {
     private final String dataForSearch = "/home/milkbeek/IdeaProjects/Phone Book/Phone Book/task/src/directory.txt";
     private final String data = "/home/milkbeek/IdeaProjects/Phone Book/Phone Book/task/src/find.txt";
     private List<RepresentPhoneBook> arrayWithDataForSearch = new ArrayList<>();
     private List<RepresentPhoneBook> arrayWithData = new ArrayList<>();
+    private HashTable hashTables = new HashTable(5);
+    private HashMap<String, RepresentPhoneBook> hashtable = null;
 
     public PhoneBook() {
         readDataForSearchFromFile();
@@ -96,10 +96,11 @@ public class PhoneBook {
         long startSort = System.currentTimeMillis();
         QuickSort.quickSort(arrayWithDataForSearch, 0, arrayWithDataForSearch.size() - 1);
         long endSort = System.currentTimeMillis() - startSort;
+        QuickSort.quickSort(arrayWithData, 0, arrayWithData.size() - 1);
         int foundBinary = 0;
         long startSearch = System.currentTimeMillis();
         for (RepresentPhoneBook representPhoneBook : arrayWithData) {
-            foundBinary += BinarySearch.binarySearch(arrayWithDataForSearch, representPhoneBook, 0, arrayWithDataForSearch.size() - 1);
+            foundBinary += BinarySearch.binarySearch(arrayWithDataForSearch, representPhoneBook) > 0 ? 1 : 0;
         }
         long endSearch = System.currentTimeMillis() - startSearch;
         System.out.println("Found " + 500 + " / 500 entries. Time taken: " + printTime(endSearch + endSort));
@@ -107,10 +108,32 @@ public class PhoneBook {
         System.out.println("Searching time: " + printTime(endSearch));
     }
 
+    private void hashTabling() {
+        System.out.println("Start searching (hash table)...");
+        hashtable = new HashMap<>(arrayWithDataForSearch.size());
+        long startCreating = System.currentTimeMillis();
+        for (RepresentPhoneBook representPhoneBook : arrayWithDataForSearch) {
+            hashtable.put(representPhoneBook.getFirstName() + representPhoneBook.getSecondName(), representPhoneBook);
+        }
+        long endCreating = System.currentTimeMillis() - startCreating;
+        int foundBinary = 0;
+        long startSearch = System.currentTimeMillis();
+        for (RepresentPhoneBook representPhoneBook : arrayWithData) {
+            if (hashtable.get(representPhoneBook.getFirstName() + representPhoneBook.getSecondName()) != null) {
+                ++foundBinary;
+            }
+        }
+        long endSearch = System.currentTimeMillis() - startSearch;
+        System.out.println("Found " + foundBinary + " / 500 entries. Time taken: " + printTime(endSearch + endCreating));
+        System.out.println("Creating time: " + printTime(endCreating));
+        System.out.println("Searching time: " + printTime(endSearch));
+    }
+
     public void init() {
         long estimatedTime = linear();
         bubblingJump(estimatedTime);
         binaryQuicking();
+        hashTabling();
     }
 
     private String printTime(long estimatedTime) {

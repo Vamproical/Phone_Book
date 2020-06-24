@@ -14,7 +14,7 @@ public class JumpSearch {
             return 0;
         }
 
-        if (arrayWithDataForSearch.get(currentRight).getFirstName().equals(arrayWithData.getFirstName()) && arrayWithDataForSearch.get(currentRight).getSecondName().equals(arrayWithData.getSecondName())) {
+        if (arrayWithDataForSearch.get(currentRight).equals(arrayWithData)) {
             return 0;
         }
 
@@ -42,7 +42,7 @@ public class JumpSearch {
 
     public static int backwardSearch(List<RepresentPhoneBook> arrayWithDataForSearch, RepresentPhoneBook arrayWithData, int leftExcl, int rightIncl) {
         for (int i = rightIncl; i > leftExcl; i--) {
-            if (arrayWithDataForSearch.get(i).getFirstName().equals(arrayWithData.getFirstName()) && arrayWithDataForSearch.get(i).getSecondName().equals(arrayWithData.getSecondName())) {
+            if (arrayWithDataForSearch.get(i).equals(arrayWithData)) {
                 return 0;
             }
         }
